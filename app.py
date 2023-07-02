@@ -7,12 +7,14 @@ from pathlib import Path
 from speaker_recognition.recognizer import SpeakerRecognizer
 from speaker_recognition.database import DBMananger
 from speaker_recognition.audio_processor import AudioProcessor
-from speaker_recognition.config import TIME_ZONE
+from speaker_recognition.notification import Notifier
+from speaker_recognition.config import TIME_ZONE, TIME_FORMAT
 
 
 sr = SpeakerRecognizer()
 dbm = DBMananger()
 ap = AudioProcessor()
+nfr = Notifier()
 
 app = Flask(__name__, template_folder='template', static_folder='static')
 app.config['AUDIO_UNKNOWN_PATH'] = '.'
@@ -49,8 +51,9 @@ def recognition():
                 return 'Content format is not correct.'
             
         res = sr.recognize(Path(app.config['AUDIO_UNKNOWN_PATH']))
-        current_time = datetime.now(pytz.timezone(TIME_ZONE)).strftime("%Y-%m-%d %H:%M:%S")
+        current_time = datetime.now(pytz.timezone(TIME_ZONE)).strftime(TIME_FORMAT)
         dbm.clock_in(dict(eid=res if res is not sr.unknown else -1, time_in=current_time))
+        nfr.send_clocked_in_out_email(res, current_time)
 
         # print(res)
         return jsonify({'EID': str(res)})

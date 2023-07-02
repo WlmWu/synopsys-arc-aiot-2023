@@ -7,7 +7,7 @@ from speaker_recognition.config import DATABASE_PATH, DB_NAME, TABLE_NAME_EMPLOY
 # from config import DATABASE_PATH, DB_NAME, TABLE_NAME_EMPLOYEE, TABLE_NAME_TIMESTAMP, TIME_ZONE
 
 
-class Database():
+class _Database():
     def __init__(self, dbpath=Path(DATABASE_PATH) / DB_NAME) -> None:
         self._conn = sqlite3.connect(dbpath, check_same_thread=False)
         self._cursor = self._conn.cursor()
@@ -69,7 +69,7 @@ class Database():
 
 class DBMananger():
     def __init__(self, dbpath=Path(DATABASE_PATH) / DB_NAME) -> None:
-        self._db = Database(dbpath)
+        self._db = _Database(dbpath)
 
     def key_error_handler(self, keys: list, dic: dict, func_name: str):
         try:
@@ -81,7 +81,7 @@ class DBMananger():
         return True
 
     def enroll_new(self, new_employee: dict):
-        keys = ['name', 'feature_path']
+        keys = ['name', 'email', 'feature_path']
         if self.key_error_handler(keys, new_employee, "New employees") is False:
             return
         
@@ -120,6 +120,9 @@ class DBMananger():
         self._db._cursor.execute(sql)
 
         return list(self._db._cursor)[0][0] + 1
+    
+    def get_employee(self, eid: int) -> dict:
+        return self._db.select_one(TABLE_NAME_EMPLOYEE, dict(EID=eid))
         
 
 
@@ -129,6 +132,7 @@ if __name__ == '__main__':
     CREATE TABLE IF NOT EXISTS {TABLE_NAME_EMPLOYEE} (
         EID INTEGER PRIMARY KEY,
         name TEXT,
+        email TEXT,
         feature_path TEXT
     );
     """
@@ -143,10 +147,10 @@ if __name__ == '__main__':
     """
     current_time = lambda: datetime.now(pytz.timezone(TIME_ZONE)).strftime("%Y-%m-%d %H:%M:%S")
 
-    db = Database()
+    db = _Database()
     # db.execute(t1)
     # db.execute(t2)
-    # insert1 = {'name': 'test', 'feature_path': './'}
+    # insert1 = {'name': 'test', 'email': 'test@nycu.edu', 'feature_path': './'}
     # db.insert_new(TABLE_NAME_EMPLOYEE, insert1)
     # insert2 = {'eid': 1, 'time_in': current_time(), 'time_out': current_time()}
     # db.insert_new(TABLE_NAME_TIMESTAMP, insert2)
@@ -154,7 +158,7 @@ if __name__ == '__main__':
     # print(db.select_one(TABLE_NAME_EMPLOYEE, {'eid': 1, 'name': 'ttest'}))
 
     dbm = DBMananger()
-    print(dbm.get_all_timestamps())
+    # print(dbm.get_all_timestamps())
     # dbm.enroll_new({'name': 'test3', 'feature_path': '../.'})
     # dbm.clock_in({'eid': 2, 'time_in': current_time(), 'time_out': current_time()})
     # dbm.clock_out({'eid': 1, 'time_in': '2023-05-13 04:35:56', 'time_out': current_time()})

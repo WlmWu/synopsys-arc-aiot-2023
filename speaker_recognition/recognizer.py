@@ -53,12 +53,12 @@ class SpeakerRecognizer():
         return id_pred if similarity > self._threshold else self.unknown
     
     
-    def enrolled_new(self, new_employee_name: str, new_audio_path: Union[str, Path]):
+    def enrolled_new(self, new_employee_name: str, new_audio_path: Union[str, Path], new_employee_email='test@gmail.com'):
         wav_fname, wavs = self.audio_preprocess(new_audio_path)
 
         speaker_id = self._dbm.get_new_eid()
         saved_path = self._embeddings_path / f'{speaker_id}.npy'
-        employee = dict(name=wav_fname if new_employee_name is None else new_employee_name, feature_path=str(saved_path))
+        employee = dict(name=wav_fname if new_employee_name is None else new_employee_name, email=new_employee_email, feature_path=str(saved_path))
         
         self._dbm.enroll_new(employee)
 
