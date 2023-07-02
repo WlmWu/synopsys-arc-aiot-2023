@@ -8,6 +8,8 @@ from pydub import AudioSegment
 import wave
 import contextlib
 
+LOCALHOST = 'http://127.0.0.1:8080/recognition'
+
 class AudioManager():
     def __init__(self) -> None:
         pass
@@ -57,7 +59,7 @@ class AudioManager():
 
 
 
-def send_test_audio(audio, url='http://127.0.0.1:8080/recognition') -> requests.Response:
+def send_test_audio(audio, url=LOCALHOST) -> requests.Response:
     headers = {
         "Authorization": "Bearer %_put_your_auth_token_here_%",
     }
@@ -71,14 +73,6 @@ def send_test_audio(audio, url='http://127.0.0.1:8080/recognition') -> requests.
     return r
 
 def pretty_print_POST(req):
-    """
-    At this point it is completely built and ready
-    to be fired; it is "prepared".
-
-    However pay attention at the formatting used in 
-    this function because it is programmed to be pretty 
-    printed and may differ from the actual request.
-    """
     with open('payload.txt', 'w') as f:
         s = '{}\r\n{}\r\n\r\n{}'.format(
             req.method + ' ' + req.url,
@@ -89,6 +83,8 @@ def pretty_print_POST(req):
 
 if __name__ == '__main__':
     VM_IP = 'https://35.221.137.170/recognition'
+    VM_IP = LOCALHOST
+
     TEST_WAV = 'p225_037.wav'
     # TEST_WAV = 'p226_017.wav'
     # TEST_WAV = 'p228_025.wav'
@@ -104,7 +100,7 @@ if __name__ == '__main__':
     # TEST_WAV = 'p225_037_2500_3000_5times.wav'
 
     # TEST_WAV = 'p225_037_2500_3500.wav'
-    TEST_WAV = 'p225_037_2500_3500_5times.wav'
+    # TEST_WAV = 'p225_037_2500_3500_5times.wav'
 
     alm = AudioManager()
 
@@ -118,6 +114,5 @@ if __name__ == '__main__':
     saved = TEST_WAV
     # saved = alm.splitter(2500, 3500, TEST_WAV)
     # saved = alm.concater([TEST_WAV for _ in range(5)])
-    alm.get_audio_length(saved)
     res = send_test_audio(saved, url=VM_IP)
     print(res.text)
