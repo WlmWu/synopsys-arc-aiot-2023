@@ -27,6 +27,8 @@ class Notifier:
 
     def send_clocked_in_out_email(self, eid: int, timestamp: str):
         employee = self._dbm.get_employee(eid)
+        if employee == {}:
+            return
 
         content = MIMEMultipart() 
         content["subject"] = "Clocked In/Out Notification"
