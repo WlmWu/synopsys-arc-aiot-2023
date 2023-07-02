@@ -3,6 +3,8 @@ from datetime import datetime
 import pytz
 import os
 from pathlib import Path
+import threading
+import time
 
 from speaker_recognition.recognizer import SpeakerRecognizer
 from speaker_recognition.database import DBMananger
@@ -52,8 +54,14 @@ def recognition():
             
         res = sr.recognize(Path(app.config['AUDIO_UNKNOWN_PATH']))
         current_time = datetime.now(pytz.timezone(TIME_ZONE)).strftime(TIME_FORMAT)
-        dbm.clock_in(dict(eid=res if res is not sr.unknown else -1, time_in=current_time))
-        nfr.send_clocked_in_out_email(res, current_time)
+
+        threads = []
+        threads.append(threading.Thread(target=nfr.send_clocked_in_out_email, args=(res, current_time,)))
+        threads.append(threading.Thread(target=dbm.clock_in, args=(dict(eid=res if res is not sr.unknown else -1, time_in=current_time),)))
+        for t in threads:
+            t.start()
+        # for t in threads:
+        #     t.join()        
 
         # print(res)
         return jsonify({'EID': str(res)})
