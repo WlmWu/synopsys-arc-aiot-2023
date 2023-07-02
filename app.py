@@ -4,7 +4,6 @@ import pytz
 import os
 from pathlib import Path
 import threading
-import time
 
 from speaker_recognition.recognizer import SpeakerRecognizer
 from speaker_recognition.database import DBMananger
