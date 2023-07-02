@@ -7,7 +7,7 @@ TABLE_NAME_TIMESTAMP = 'timestamps'     # eid, timestamp_in, timestamp_out
 
 TIME_ZONE = 'Asia/Taipei'
 # TIME_ZONE = 'America/Chicago'
-TIME_FORMAT = '"%Y-%m-%d %H:%M:%S"'
+TIME_FORMAT = '%Y-%m-%d %H:%M:%S'
 
-EMAIL_SENDER = "noreply.arcaiot2023.team7@gmail.com"
+EMAIL_SENDER = 'noreply.arcaiot2023.team7@gmail.com'
 GMAIL_APP_PASSWORD = 'wvjlrazbwhkcjnxm'
