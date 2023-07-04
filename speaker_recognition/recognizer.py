@@ -19,8 +19,10 @@ class SpeakerRecognizer():
         self._ap = AudioProcessor()
 
         self._embeddings_path = embeddings_path
-
-        self._threshold = 0.85
+    
+    @property
+    def threshold(self):
+        return 0.75
     
     @property
     def unknown(self):
@@ -56,7 +58,7 @@ class SpeakerRecognizer():
                 similarity = similarity_matrix
                 id_pred = enrolled_speaker_id
 
-        return id_pred if similarity > self._threshold else self.unknown
+        return id_pred if similarity > self.threshold else self.unknown
     
     
     def enrolled_new(self, new_employee_name: str, new_audio_path: Union[str, Path], new_employee_email='test@nycu.edu'):
