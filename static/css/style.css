@@ -11019,3 +11019,8 @@ h5,
     z-index: 999999;
     background-color: whitesmoke;
 }
+
+#to-bottom-btn:active {
+    box-shadow: 0 5px #666;
+    transform: translateY(4px);
+}
