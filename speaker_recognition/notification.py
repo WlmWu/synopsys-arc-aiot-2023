@@ -5,10 +5,8 @@ import smtplib
 from datetime import datetime
 import pytz
 
-from speaker_recognition.database import DBMananger
-from speaker_recognition.config import TIME_FORMAT, EMAIL_SENDER, GMAIL_APP_PASSWORD
-# from database import DBMananger
-# from config import TIME_FORMAT, EMAIL_SENDER, GMAIL_APP_PASSWORD
+from .database import DBMananger
+from .config import TIME_FORMAT, EMAIL_SENDER, GMAIL_APP_PASSWORD
 
 class Notifier:
     def __init__(self) -> None:

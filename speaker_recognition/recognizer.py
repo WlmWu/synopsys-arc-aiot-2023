@@ -5,8 +5,8 @@ from tqdm import tqdm
 import numpy as np
 from typing import Union
 
-from speaker_recognition.config import DATABASE_PATH, ENROLLED_EMBEDDINGS_PATH, DB_NAME
-from speaker_recognition.database import DBMananger
+from .config import DATABASE_PATH, ENROLLED_EMBEDDINGS_PATH, DB_NAME
+from .database import DBMananger
 
 class SpeakerRecognizer():
     def __init__(self, embeddings_path=Path(DATABASE_PATH) / ENROLLED_EMBEDDINGS_PATH) -> None:

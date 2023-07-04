@@ -5,11 +5,8 @@ import os
 from pathlib import Path
 import threading
 
-from speaker_recognition.recognizer import SpeakerRecognizer
-from speaker_recognition.database import DBMananger
-from speaker_recognition.audio_processor import AudioProcessor
-from speaker_recognition.notification import Notifier
-from speaker_recognition.config import TIME_ZONE, TIME_FORMAT
+from speaker_recognition import SpeakerRecognizer, DBMananger, AudioProcessor, Notifier
+from speaker_recognition import TIME_ZONE, TIME_FORMAT
 
 
 sr = SpeakerRecognizer()

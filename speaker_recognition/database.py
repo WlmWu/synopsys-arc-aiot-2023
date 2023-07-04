@@ -3,8 +3,7 @@ from datetime import datetime
 import pytz
 from pathlib import Path
 
-from speaker_recognition.config import DATABASE_PATH, DB_NAME, TABLE_NAME_EMPLOYEE, TABLE_NAME_TIMESTAMP, TIME_ZONE
-# from config import DATABASE_PATH, DB_NAME, TABLE_NAME_EMPLOYEE, TABLE_NAME_TIMESTAMP, TIME_ZONE
+from .config import DATABASE_PATH, DB_NAME, TABLE_NAME_EMPLOYEE, TABLE_NAME_TIMESTAMP, TIME_ZONE
 
 
 class _Database():
