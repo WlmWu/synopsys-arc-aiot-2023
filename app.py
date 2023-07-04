@@ -32,6 +32,9 @@ def allowed_raw_audio_file(filename):
 @app.route('/')
 def index():
     employees, timestamps = dbm.get_all_enrolled(), dbm.get_all_timestamps()
+    table = lambda table_name, data, index: dict(table_name=table_name, data=data, index=index)
+    employees = table("Employees", data=employees, index=False)
+    timestamps = table("Timestamps", data=timestamps, index=True)
     return render_template('index.html', employees=employees, timestamps=timestamps)
 
 @app.route('/recognition',methods=['GET','POST'])

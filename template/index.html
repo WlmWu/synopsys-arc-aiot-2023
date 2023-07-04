@@ -2,18 +2,18 @@
 
 {% block title %}ARC AIoT 2023 Tables{% endblock %} 
 
-{% macro create_table(table_title, col_name, data, enumerate) -%}
+{% macro create_table(table_id, table_title, col_name, data, enumerate) -%}
 <section class="ftco-section">
     <div class="container">
         <div class="row justify-content-center">
             <div class="col-md-6 text-center mb-5">
-                <h2 class="heading-section">{{table_title}}</h2>
+                <h2 class="heading-section">{{ table_title }}</h2>
             </div>
         </div>
         <div class="row">
             <div class="col-md-12">
                 <div class="table-wrap">
-                    <table class="table">
+                    <table id="{{ table_id }}" class="table">
                         <thead class="thead-primary">
                             <tr>
                                 {% if enumerate %}
@@ -28,11 +28,12 @@
                         <tbody>
                             {% for datum in data %}
                                 <tr>
+                                    {% set eid = datum.EID if datum.EID != -1 else 'Unknown' %}
                                     {% if enumerate %}
                                         <th scope="row">{{ loop.index }}</th>
-                                        <td>{{ datum.EID }}</td>
+                                        <td>{{ eid }}</td>
                                     {% else %}
-                                        <th scope="row">{{ datum.EID }}</th>
+                                        <th scope="row">{{ eid }}</th>
                                     {% endif %}
                                     
                                     {% for col in col_name %}
@@ -43,6 +44,17 @@
                                 </tr>
                             {% endfor %}
                         </tbody>
+                        <tfoot id="search_0">
+                            <tr>
+                                {% if enumerate %}
+                                    <th>#</th>
+                                {% endif %}
+
+                                {% for col in col_name %}
+                                    <th>{{ col }}</th>
+                                {% endfor %}
+                            </tr>
+                        </tfoot>
                     </table>
                 </div>
             </div>
@@ -51,7 +63,48 @@
 </section>
 {%- endmacro %} 
 
+{% set all_data = [employees, timestamps] %}
+
+{% set tables = dict() %}
+{% for table in all_data %}
+{% set tid = 'table' ~ loop.index %}
+{% set _dummy = tables.__setitem__(tid, table) %}
+{% endfor %}
+
 {% block main %}
-{{ create_table("Employees", employees[0].keys(), employees, False) }} 
-{{ create_table("Timestamps", timestamps[0].keys(), timestamps, True) }} 
+{% for tid, table in tables.items() %}
+{{create_table(tid, table.table_name, table.data[0].keys(), table.data, table.index)}}
+{% endfor %}
+{% endblock %}
+
+{% block script%}
+<script type='text/javascript'>
+{% for tid, _ in tables.items() %}
+$(document).ready( function () {
+    $('#{{ tid }}').DataTable({
+    initComplete: function () {
+        this.api()
+            .columns()
+            .every(function () {
+                var column = this;
+                var title = column.footer().textContent;
+ 
+                // Create input element and add event listener
+                $('<input type="text" placeholder="Search ' + title + '" />')
+                    .appendTo($(column.footer()).empty())
+                    .on('keyup change clear', function () {
+                        if (column.search() !== this.value) {
+                            column.search(this.value).draw();
+                        }
+                    });
+            });
+        },
+    });
+});
+{% endfor %}
+$('#to-bottom-btn').on('click', function() {
+    $('html,body').animate({scrollTop: document.body.scrollHeight - 10}, 'slow');
+});
+</script> 
+
 {% endblock %}

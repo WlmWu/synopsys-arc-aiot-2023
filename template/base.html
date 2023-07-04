@@ -10,10 +10,12 @@
 
     <link href='https://fonts.googleapis.com/css?family=Roboto:400,100,300,700' rel='stylesheet' type='text/css'>
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
+    <link rel="stylesheet" href="https://cdn.datatables.net/1.13.4/css/jquery.dataTables.css" />
     <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
 </head>
 
 <body>
+    <button id="to-bottom-btn">&#8681;</button>
     <main>
         {% block main %}{% endblock %}
     </main>
@@ -22,6 +24,8 @@
     <script src="{{ url_for('static', filename='js/popper.js') }}"></script>
     <script src="{{ url_for('static', filename='js/bootstrap.min.js') }}"></script>
     <script src="{{ url_for('static', filename='js/main.js') }}"></script>
+
+    <script src="https://cdn.datatables.net/1.13.4/js/jquery.dataTables.js"></script>
     {% block script %}{% endblock %}
 </body>
 
