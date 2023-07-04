@@ -6,14 +6,17 @@ import numpy as np
 from typing import Union
 import argparse
 import os
+import math
 
 from .config import DATABASE_PATH, ENROLLED_EMBEDDINGS_PATH, DB_NAME
 from .database import DBMananger
+from .audio_processor import AudioProcessor
 
 class SpeakerRecognizer():
     def __init__(self, embeddings_path=Path(DATABASE_PATH) / ENROLLED_EMBEDDINGS_PATH) -> None:
         self._encoder = VoiceEncoder()
         self._dbm = DBMananger()
+        self._ap = AudioProcessor()
 
         self._embeddings_path = embeddings_path
 
@@ -37,6 +40,7 @@ class SpeakerRecognizer():
         return wav_fname, wavs
     
     def recognize(self, new_audio_path: Union[str, Path]) -> str:
+        self._ap.audio_padding(list(Path(new_audio_path).glob("*.wav"))[0], 2)
         _, wavs = self.audio_preprocess(new_audio_path)
         embeddings = self._encoder.embed_utterance(wavs[0])
 

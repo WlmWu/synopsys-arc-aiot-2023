@@ -1,12 +1,13 @@
 import os
 from pathlib import Path
-from typing import List, Union
+from typing import List, Union, Optional
 
 from pydub import AudioSegment
 import wave
 import contextlib
 from scipy.io.wavfile import write
 import numpy as np
+import math
 
 class AudioProcessor():
     def __init__(self) -> None:
@@ -22,16 +23,16 @@ class AudioProcessor():
         print(f'Saved as {outfile}')
         return outfile
 
-    def concater(self, audios: List[Union[str, Path]]) -> str:
-        type_str_or_path = lambda s: (type(s) is str) or (type(s) is Path)
+    def concater(self, audios: List[Union[str, Path]], outfile: Optional[Union[str, Path]] = None) -> str:
         for audio in audios:
-            if type_str_or_path(audio):
+            if isinstance(audio, Path) or isinstance(audio, str):
                 audio = Path(audio)
             else:
-                return TypeError
+                raise TypeError
 
         infiles = audios
-        outfile = Path(audios[0]).parent.resolve() / f"{'_'.join(list(map(lambda a: os.path.basename(a).split('.')[0], audios)))}.wav"
+        if outfile is None:
+            outfile = Path(audios[0]).parent.resolve() / f"{'_'.join(list(map(lambda a: os.path.basename(a).split('.')[0], audios)))}.wav"
 
         data= []
         for infile in infiles:
@@ -47,12 +48,11 @@ class AudioProcessor():
         return str(outfile)
 
     def get_audio_length(self, audio: Union[str, Path]) -> float:
-        with contextlib.closing(wave.open(audio,'r')) as f:
+        with contextlib.closing(wave.open(str(audio),'r')) as f:
             frames = f.getnframes()
             rate = f.getframerate()
         
-        duration = frames / float(rate)
-        print(duration)
+        duration = frames / float(rate)     # sec
         return duration
     
     def raw_to_wav(self, audio: Union[str, Path], samplerate=16000) -> str: 
@@ -67,6 +67,13 @@ class AudioProcessor():
         
         print(f"Saved as {outfile}")
         return str(outfile)
+
+    def audio_padding(self, audio: Union[str, Path], min_audio_len: float = 2.) -> str:
+        # min_audio_len: sec
+        audio_length = self.get_audio_length(audio)
+        if audio_length < min_audio_len:
+            audio = self.concater([audio for _ in range(math.ceil(min_audio_len / audio_length))], audio)
+        return audio
 
 if __name__ == '__main__':
     ap = AudioProcessor()
