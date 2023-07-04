@@ -103,7 +103,10 @@ $(document).ready( function () {
 });
 {% endfor %}
 $('#to-bottom-btn').on('click', function() {
-    $('html,body').animate({scrollTop: document.body.scrollHeight - 10}, 'slow');
+    var eps = 10;
+    if(Math.abs($(window).scrollTop() + $(window).height() - $(document).height()) > eps) {
+        $('html,body').animate({scrollTop: document.body.scrollHeight - eps}, 'slow');
+    }
 });
 </script> 
 
