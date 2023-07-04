@@ -4,6 +4,8 @@ from pathlib import Path
 from tqdm import tqdm
 import numpy as np
 from typing import Union
+import argparse
+import os
 
 from .config import DATABASE_PATH, ENROLLED_EMBEDDINGS_PATH, DB_NAME
 from .database import DBMananger
@@ -53,12 +55,12 @@ class SpeakerRecognizer():
         return id_pred if similarity > self._threshold else self.unknown
     
     
-    def enrolled_new(self, new_employee_name: str, new_audio_path: Union[str, Path], new_employee_email='test@gmail.com'):
+    def enrolled_new(self, new_employee_name: str, new_audio_path: Union[str, Path], new_employee_email='test@nycu.edu'):
         wav_fname, wavs = self.audio_preprocess(new_audio_path)
 
         speaker_id = self._dbm.get_new_eid()
         saved_path = self._embeddings_path / f'{speaker_id}.npy'
-        employee = dict(name=wav_fname if new_employee_name is None else new_employee_name, email=new_employee_email, feature_path=str(saved_path))
+        employee = dict(name=wav_fname if new_employee_name is None else new_employee_name, email=new_employee_email, feature_path=f'{speaker_id}.npy')
         
         self._dbm.enroll_new(employee)
 
@@ -78,15 +80,22 @@ class SpeakerRecognizer():
 
 if __name__ == '__main__':
     sr = SpeakerRecognizer()
+    parser = argparse.ArgumentParser()
+    parser.add_argument('-n',
+                        '--newpath',
+                        default=None,
+                        help="Path of audio files for newly enrolled employee",
+                        type=str)
+    args = parser.parse_args()
 
     # # Enroll a new speaker
-    # # fpath contains only *.wav
+    # # new_audio_folder contains only *.wav
 
-    # AUDIO_PATH = Path('./enrolled_audio')
-    # FNAME = '227'
-    # fpath = AUDIO_PATH / FNAME
-    # # sr.enrolled_new(FNAME, fpath)
-    # sr.enrolled_new(None, fpath)
+    if args.newpath is not None:
+        new_path = args.newpath
+        audio_path = Path(new_path).parent.resolve()
+        new_audio_folder = os.path.basename(new_path)
+        sr.enrolled_new(new_audio_folder, audio_path / new_audio_folder)
 
 
     # # Recognize speaker
