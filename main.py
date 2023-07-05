@@ -50,6 +50,7 @@ app.config['MAX_CONTENT_LENGTH'] = 10 * 1000 * 1000
 app.config['AUDIO_UNKNOWN_PATH'] = '.'
 app.config['AUDIO_TMP_FILENAME'] = 'unknown.wav'
 app.config['RAW_AUDIO_TMP_FILENAME'] = 'unknown.log'
+app.config['NO_AUTH_ATTR'] = '_no_check'
 
 
 @app.errorhandler(HTTPException)
@@ -187,7 +188,7 @@ def recognition():
     else:
         return jsonify({'data': 'Please using POST method'})
 
-@app.route('/database')
+@app.route('/database', methods=['GET'])
 def dbview():
     employees, timestamps = dbm.get_all_enrolled(), dbm.get_all_timestamps()
     table = lambda table_name, data, index: dict(table_name=table_name, data=data, index=index)
