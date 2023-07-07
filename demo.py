@@ -1,5 +1,6 @@
 import requests
 from speaker_recognition import AudioProcessor
+import argparse
 
 LOCALHOST = 'http://127.0.0.1:8080/recognition'
 
@@ -27,36 +28,26 @@ def pretty_print_POST(req):
 
 if __name__ == '__main__':
     VM_IP = 'https://35.221.137.170/recognition'
-    VM_IP = LOCALHOST
 
-    TEST_WAV = 'p225_037.wav'
-    # TEST_WAV = 'p226_017.wav'
-    # TEST_WAV = 'p228_025.wav'
+    parser = argparse.ArgumentParser()
+    parser.add_argument('-f',
+                        '--audio_path',
+                        default=None,
+                        help="Path of audio file to send",
+                        type=str)
+    parser.add_argument('-i',
+                        '--ip',
+                        default=VM_IP,
+                        help='API URL',
+                        type=str)
+    args = parser.parse_args()
 
-    # TEST_WAV = 'p228_025_1500_2500.wav'
-    # TEST_WAV = 'p225_037_2000_3000_.wav'
-    # TEST_WAV = 'p225_037_2000_4000.wav'
+    TEST_WAV = args.audio_path
+    IP = args.ip
 
-    # TEST_WAV = 'p225_037_1500_2500.wav'
-    # TEST_WAV = 'p225_037_1500_2500_5times.wavs'
-
-    # TEST_WAV = 'p225_037_2500_3000.wav'
-    # TEST_WAV = 'p225_037_2500_3000_5times.wav'
-
-    # TEST_WAV = 'p225_037_2500_3500.wav'
-    # TEST_WAV = 'p225_037_2500_3500_5times.wav'
-
-    ap = AudioProcessor()
-
-    # ap.get_audio_length(TEST_WAV)
-    # ap.splitter(2000, 4000, TEST_WAV)
-    # ap.concater([TEST_WAV for _ in range(5)])
-
-    # res = send_test_audio(TEST_WAV)
-    # print(res.text)
-
+    # ap = AudioProcessor()
     saved = TEST_WAV
     # saved = ap.splitter(2500, 3500, TEST_WAV)
     # saved = ap.concater([TEST_WAV for _ in range(5)])
-    res = send_test_audio(saved, url=VM_IP)
+    res = send_test_audio(saved, url=IP)
     print(res.text)
