@@ -10,4 +10,4 @@ TIME_ZONE = 'Asia/Taipei'
 TIME_FORMAT = '%Y-%m-%d %H:%M:%S'
 
 EMAIL_SENDER = 'noreply.arcaiot2023.team7@gmail.com'
-GMAIL_APP_PASSWORD = 'wvjlrazbwhkcjnxm'
+GMAIL_APP_PASSWORD = '%_put_your_auth_token_here_%'
